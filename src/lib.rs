@@ -1,5 +1,13 @@
 use std::future::Future;
 
+/// An identifier for a unique piece of software that connects to the zcash network.
+pub struct ProtocolId {
+    /// The name of the software.
+    pub name: String,
+    /// The version of the software.
+    pub version: String,
+}
+
 /// A reference to a block on a blockchain.
 /// See librustzcash zcash_protocol/src/consensus.rs
 pub struct BlockHeight(u32);
@@ -8,23 +16,26 @@ pub struct BlockHeight(u32);
 /// see librustzcash components zip321/src/lib.rs  
 pub struct Payment {
     /// The address to which the payment should be sent.
-    recipient_address: String,
+    pub recipient_address: String,
 
     /// The amount of the payment that is being requested.
-    amount: u64,
+    pub amount: u64,
 
     /// A memo that, if included, must be provided with the payment.
     /// If a memo is present and [`recipient_address`] is not a shielded
     /// address, the wallet should report an error.
     ///
     /// [`recipient_address`]: #structfield.recipient_address
-    memo: Option<String>,
+    pub memo: Option<String>,
 
     /// A list of other arbitrary key/value pairs associated with this payment.
-    other_params: Vec<(String, String)>,
+    pub other_params: Vec<(String, String)>,
 }
 
 pub trait Wallet {
+    /// To return the name and version of the wallet software.
+    fn protocol_id() -> ProtocolId;
+
     /// To create a new wallet from scratch.
     /// This wallet is recommended be empty. It should not perform any actions without being instructed.
     /// It should not generate any keys.
