@@ -40,7 +40,7 @@ pub trait Wallet {
     /// This wallet is recommended be empty. It should not perform any actions without being instructed.
     /// It should not generate any keys.
     /// It should not connect to any servers.
-    fn new_wallet() -> impl Future<Output = Self>;
+    fn new_wallet() -> impl Future<Output = Self> + Send;
 
     /// An error that can result from trying to add a server connection. The [add_server] method comments explain.
     type AddServerError;
@@ -50,7 +50,7 @@ pub trait Wallet {
     fn add_server(
         &mut self,
         server_address: String,
-    ) -> impl Future<Output = Result<(), Self::AddServerError>>;
+    ) -> impl Future<Output = Result<(), Self::AddServerError>> + Send;
 
     /// An error that can result from trying to add a key. The [add_key] method comments explain.
     type AddKeyError;
@@ -60,7 +60,7 @@ pub trait Wallet {
     fn add_key(
         &mut self,
         key_string: String,
-    ) -> impl Future<Output = Result<(), Self::AddKeyError>>;
+    ) -> impl Future<Output = Result<(), Self::AddKeyError>> + Send;
 
     /// An error that can result from querying the max height the wallet has scanned for a server. The [get_max_scanned_height_for_server] method comments explain.
     type GetMaxScannedHeightError;
@@ -69,12 +69,15 @@ pub trait Wallet {
     fn get_max_scanned_height_for_server(
         &mut self,
         server: String,
-    ) -> impl Future<Output = Result<BlockHeight, Self::GetMaxScannedHeightError>>;
+    ) -> impl Future<Output = Result<BlockHeight, Self::GetMaxScannedHeightError>> + Send;
 
     /// An error that can result from attempting a payment. The [pay] method comments explain.
     type PayError;
     /// To make a payment.
     /// The wallet must construct a well-formed transaction with the provided specifications.
     /// The wallet must try to cause this transaction to be confirmed on chain.
-    fn pay(&mut self, payments: Vec<Payment>) -> impl Future<Output = Result<(), Self::PayError>>;
+    fn pay(
+        &mut self,
+        payments: Vec<Payment>,
+    ) -> impl Future<Output = Result<(), Self::PayError>> + Send;
 }
