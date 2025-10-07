@@ -1,7 +1,8 @@
 use std::future::Future;
 
 /// An identifier for a unique piece of software that connects to the zcash network.
-pub struct ProtocolId {
+/// User agent is defined here. [<https://developer.mozilla.org/en-US/docs/Glossary/User_agent>]
+pub struct UserAgentId {
     /// The name of the software.
     pub name: String,
     /// The version of the software.
@@ -34,7 +35,7 @@ pub struct Payment {
 
 pub trait Wallet {
     /// To return the name and version of the wallet software.
-    fn protocol_id() -> ProtocolId;
+    fn user_agent_id() -> UserAgentId;
 
     /// To create a new wallet from scratch.
     /// This wallet is recommended be empty. It should not perform any actions without being instructed.
@@ -42,7 +43,7 @@ pub trait Wallet {
     /// It should not connect to any servers.
     fn new_wallet() -> impl Future<Output = Self> + Send;
 
-    /// An error that can result from trying to add a server connection. The [add_server] method comments explain.
+    /// An error that can result from trying to add a server connection. The [`Self::add_server`] method comments explain.
     type AddServerError;
     /// To connect to a server.
     /// The wallet should immediately ping the server and confirm that they use compatible protocols. If not, or if the server does not answer, return an error.
@@ -52,7 +53,7 @@ pub trait Wallet {
         server_address: String,
     ) -> impl Future<Output = Result<(), Self::AddServerError>> + Send;
 
-    /// An error that can result from trying to add a key. The [add_key] method comments explain.
+    /// An error that can result from trying to add a key. The [`Self::add_key`] method comments explain.
     type AddKeyError;
     /// To add a key.
     /// The wallet must interpret the string as a zcash key.
@@ -62,7 +63,7 @@ pub trait Wallet {
         key_string: String,
     ) -> impl Future<Output = Result<(), Self::AddKeyError>> + Send;
 
-    /// An error that can result from querying the max height the wallet has scanned for a server. The [get_max_scanned_height_for_server] method comments explain.
+    /// An error that can result from querying the max height the wallet has scanned for a server. The [`Self::get_max_scanned_height_for_server`] method comments explain.
     type GetMaxScannedHeightError;
     /// To report what height it has reached scanning the chain provided by a particular server.
     /// If the wallet is not following this server, it must return an error.
@@ -71,7 +72,7 @@ pub trait Wallet {
         server: String,
     ) -> impl Future<Output = Result<BlockHeight, Self::GetMaxScannedHeightError>> + Send;
 
-    /// An error that can result from attempting a payment. The [pay] method comments explain.
+    /// An error that can result from attempting a payment. The [`Self::pay`] method comments explain.
     type PayError;
     /// To make a payment.
     /// The wallet must construct a well-formed transaction with the provided specifications.
