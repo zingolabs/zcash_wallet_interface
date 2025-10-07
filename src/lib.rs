@@ -11,7 +11,7 @@ pub struct UserAgentId {
 
 /// A reference to a block on a blockchain.
 /// See librustzcash zcash_protocol/src/consensus.rs
-pub struct BlockHeight(u32);
+pub struct BlockHeight(pub u32);
 
 /// A low-level request for a payment.
 /// see librustzcash components zip321/src/lib.rs  
