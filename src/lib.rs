@@ -3,8 +3,8 @@ use std::future::Future;
 /// An identifier for a unique piece of software that connects to the zcash network.
 /// User agent is defined here. [<https://developer.mozilla.org/en-US/docs/Glossary/User_agent>]
 pub struct UserAgentId {
-    /// The name of the software.
-    pub name: String,
+    /// I.E. the name of the software
+    pub paradigm: String,
     /// The version of the software.
     pub version: String,
 }
