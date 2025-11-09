@@ -15,6 +15,7 @@ pub struct UserAgentId {
 #[derive(Eq)] //
 #[derive(PartialOrd)] //
 #[derive(Ord)] //
+#[derive(Debug)] //
 pub struct BlockHeight(pub u32);
 
 /// A low-level request for a payment.
