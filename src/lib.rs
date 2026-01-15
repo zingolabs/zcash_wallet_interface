@@ -48,15 +48,19 @@ pub trait Wallet {
     /// It should not connect to any servers.
     fn new_wallet() -> impl Future<Output = Self> + Send;
 
-    /// An error that can result from trying to add a server connection. The [`Self::add_server`] method comments explain.
-    type AddServerError;
-    /// To connect to a server.
+    /// An error that can result from trying to connect to or sync from a server.
+    type BeginScanningServerRangeError;
+    /// To connect to a server and scan it.
     /// The wallet should immediately ping the server and confirm that they use compatible protocols. If not, or if the server does not answer, return an error.
-    /// The wallet is now responsible for interpreting data from the server and should begin to sync a shared understanding of the chain state.
-    fn add_server(
+    /// The wallet should sync the specified blocks.
+    /// If `minimum_block` is omitted, use current server height.
+    /// If `maximum_block` is omitted, scan to indefinite height.
+    fn begin_scanning_server_range(
         &mut self,
         server_address: String,
-    ) -> impl Future<Output = Result<(), Self::AddServerError>> + Send;
+        minimum_block: BlockHeight,
+        maximum_block: Option<BlockHeight>,
+    ) -> impl Future<Output = Result<(), Self::BeginScanningServerRangeError>> + Send;
 
     /// An error that can result from trying to add a key. The [`Self::add_key`] method comments explain.
     type AddKeyError;
