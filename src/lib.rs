@@ -58,7 +58,7 @@ pub trait Wallet {
     fn begin_scanning_server_range(
         &mut self,
         server_address: String,
-        minimum_block: BlockHeight,
+        minimum_block: Option<BlockHeight>,
         maximum_block: Option<BlockHeight>,
     ) -> impl Future<Output = Result<(), Self::BeginScanningServerRangeError>> + Send;
 
