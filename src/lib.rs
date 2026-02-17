@@ -18,6 +18,13 @@ pub struct UserAgentId {
 #[derive(Debug)] //
 pub struct BlockHeight(pub u32);
 
+#[cfg(feature = "zcash_protocol")]
+impl From<zcash_protocol::consensus::BlockHeight> for BlockHeight {
+    fn from(h: zcash_protocol::consensus::BlockHeight) -> Self {
+        BlockHeight(h.into())
+    }
+}
+
 /// A low-level request for a payment.
 /// see librustzcash components zip321/src/lib.rs  
 pub struct Payment {
