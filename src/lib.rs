@@ -61,7 +61,9 @@ pub trait Parameters: Clone {
     fn activation_height(&self, nu: NetworkUpgrade) -> Option<BlockHeight>;
 
     // Provided method
-    fn is_nu_active(&self, nu: NetworkUpgrade, height: BlockHeight) -> bool;
+    fn is_nu_active(&self, nu: NetworkUpgrade, height: BlockHeight) -> bool {
+        self.activation_height(nu).is_some_and(|h| h <= height)
+    }
 }
 
 pub trait Wallet {
