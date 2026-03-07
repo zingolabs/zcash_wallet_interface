@@ -38,9 +38,40 @@ pub struct Payment {
     pub other_params: Vec<(String, String)>,
 }
 
+pub enum NetworkType {
+    Main,
+    Test,
+    Regtest,
+}
+
+pub enum NetworkUpgrade {
+    Overwinter,
+    Sapling,
+    Blossom,
+    Heartwood,
+    Canopy,
+    Nu5,
+    Nu6,
+    Nu6_1,
+}
+
+pub trait Parameters: Clone {
+    // Required methods
+    fn network_type(&self) -> NetworkType;
+    fn activation_height(&self, nu: NetworkUpgrade) -> Option<BlockHeight>;
+
+    // Provided method
+    fn is_nu_active(&self, nu: NetworkUpgrade, height: BlockHeight) -> bool {
+        self.activation_height(nu).is_some_and(|h| h <= height)
+    }
+}
+
 pub trait Wallet {
     /// To return the name and version of the wallet software.
     fn user_agent_id() -> UserAgentId;
+
+    /// Returns the network parameters.
+    fn network() -> impl Parameters;
 
     /// To create a new wallet from scratch.
     /// This wallet is recommended be empty. It should not perform any actions without being instructed.
